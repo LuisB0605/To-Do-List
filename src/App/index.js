@@ -43,23 +43,23 @@ function App() {
   }
 
   const saveTodos = (newTodos) => {
-    const stringiedTodos = JSON.stringify(newTodos);
-    localStorage.setItem('TODO_V1', stringiedTodos);
+    const stringifiedTodos = JSON.stringify(newTodos);
+    localStorage.setItem('TODO_V1', stringifiedTodos);
     setTodos(newTodos);
   };
 
 
-  const completeTodo = (text) => {
+  const completeTodos = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text == text);
     const newTodos = [...todos];    
     newTodos[todoIndex].completed = true;
     saveTodos(newTodos);
   };
 
-  const deleteTodo = (text) => {
+  const deleteTodos = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text == text);
     const newTodos = [...todos];    
-    newTodos.splice();
+    newTodos.splice(todoIndex, 1);
     saveTodos(newTodos);
   };
 
@@ -80,8 +80,8 @@ function App() {
             key={todo.text}
             text={todo.text}
             completed={todo.completed}
-            onComplete={() => completeTodo(todo.text)}
-            onDelete={() => deleteTodo(todo.text)}
+            onComplete={() => completeTodos(todo.text)}
+            onDelete={() => deleteTodos(todo.text)}
           />
         ))}
       </TodoList>
