@@ -8,23 +8,41 @@ import './App.css';
 
 /*const defaulTodos = [
   { text: 'Ver videos de curso de React', completed: true },
-  { text: 'Ver videos de NFT', completed: true },
+  { text: 'Ver videos de NFT', completed: false },
   { text: 'Socializar', completed: false },
 ];*/
 
-function App() {
-  const localStorageTodos = localStorage.getItem('TODOS_V1');
-  let parsedTodos = [];
-  
-  if (!localStorageTodos) {
-    localStorage.setItem('TODOS_V1', JSON.stringify([]));
-    parsedTodos = [];
-  } else {
-    parsedTodos = JSON.parse(localStorageTodos);
-  }
-  
 
-  const [todos, setTodos] = React.useState(parsedTodos);
+function useLocalStorage(itemName, initialValue) {
+  const localStorageItem = localStorage.getItem('itemName');
+  let parsedItem;
+  
+  if (!localStorageItem) {
+    localStorage.setItem('itemName', JSON.stringify(initialValue));
+    parsedItem = initialValue;
+  } else {
+    parsedItem = JSON.parse(localStorageItem);
+  }
+
+  const [item, setItem] = React.useState(parsedItem);
+
+  const saveItem = (newItem) => {
+    const stringifiedItem = JSON.stringify(newItem);
+    localStorage.setItem(itemName, stringifiedItem);
+    setItem(newItem);
+  };
+
+  return [
+    item,
+    saveItem,
+  ];
+};
+
+
+function App() {
+  const [todos, saveTodos] = useLocalStorage('TDOS_V1', []); 
+
+ 
   const [search, setSearch] = React.useState('');
 
   const completedTodos = todos.filter(todo => !!todo.completed).length;
@@ -42,13 +60,6 @@ function App() {
     });
   }
 
-  const saveTodos = (newTodos) => {
-    const stringifiedTodos = JSON.stringify(newTodos);
-    localStorage.setItem('TODO_V1', stringifiedTodos);
-    setTodos(newTodos);
-  };
-
-
   const completeTodos = (text) => {
     const todoIndex = todos.findIndex(todo => todo.text == text);
     const newTodos = [...todos];    
@@ -62,6 +73,14 @@ function App() {
     newTodos.splice(todoIndex, 1);
     saveTodos(newTodos);
   };
+
+  console.log('Render (antes del use effect');
+
+  React.useEffect(() => {
+    console.log('use effect');
+  }, [totalTodos]);
+
+  console.log('Render (luego del use effect)');
 
   return (
     <React.Fragment>
