@@ -1,48 +1,45 @@
 import React from 'react'; 
+import { TodoContext } from '../TodoContext';
 import { TodoCounter } from '../TodoCounter';
 import { TodoSearch } from '../TodoSearch';
 import { TodoList } from '../TodoList';
 import { TodoItem } from '../TodoItem';
 import { CreateTodoButton } from '../CreateTodoButton';
 
-function AppUI({
-    loading, 
-    error,
-    totalTodos,
-    completedTodos,
-    search,
-    setSearch,
-    searchedTodos,
-    completeTodos,
-    deleteTodos,
-}) { 
+function AppUI() { 
 return(
     <React.Fragment>
-      <TodoCounter 
-        total={totalTodos}
-        completed={completedTodos}
-      />
-      <TodoSearch 
-        search={search}
-        setSearch={setSearch}
-      />
+      <TodoCounter />
+      <TodoSearch />
 
-      <TodoList>
-        {error && <p>Desesperate, hubo un error...</p>}
-        {loading && <p>Estamos cargando, no desesperes...</p>}
-        {(!loading && !searchedTodos.length) && <p>!Crea tu primer TODO!</p>}
+      <TodoContext.Consumer>
+        {({ 
+          error, 
+          loading, 
+          searchedTodos, 
+          completeTodos, 
+          deleteTodos,
+        }) => {
+          return (
+            <TodoList>
+              {error && <p>Desesperate, hubo un error...</p>}
+              {loading && <p>Estamos cargando, no desesperes...</p>}
+              {(!loading && !searchedTodos.length) && <p>!Crea tu primer TODO!</p>}
 
 
-        {searchedTodos.map(todo => (
-          <TodoItem
-            key={todo.text}
-            text={todo.text}
-            completed={todo.completed}
-            onComplete={() => completeTodos(todo.text)}
-            onDelete={() => deleteTodos(todo.text)}
-          />
-        ))}
-      </TodoList>
+              {searchedTodos.map(todo => (
+                <TodoItem
+                  key={todo.text}
+                  text={todo.text}
+                  completed={todo.completed}
+                  onComplete={() => completeTodos(todo.text)}
+                  onDelete={() => deleteTodos(todo.text)}
+                />
+              ))}
+             </TodoList>
+          );
+        }}
+      </TodoContext.Consumer>
 
       <CreateTodoButton />
     </React.Fragment>
